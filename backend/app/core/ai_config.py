@@ -6,12 +6,12 @@ class AISettings(BaseSettings):
     Configuration for the AI Service module.
     Automatically loads these values from the environment variables or a .env file.
     """
-    OPENROUTER_API_KEY: str = "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"
+    OPENROUTER_API_KEY: str = ""  # Set in backend/.env file — never hardcode here
     
     # Model Configuration
     DEFAULT_LLM_MODEL: str = "deepseek/deepseek-chat"
-    CHEAP_MODEL: str = "mistralai/mistral-large"
-    PREMIUM_MODEL: str = "anthropic/claude-3-haiku"
+    CHEAP_MODEL: str = "google/gemma-3-27b-it:free"
+    PREMIUM_MODEL: str = "deepseek/deepseek-chat"
     
     # API Settings
     OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1/chat/completions"

@@ -1,0 +1,50 @@
+# ========================
+# 🔐 SECRETS — NEVER COMMIT
+# ========================
+.env
+.env.*
+!.env.example
+
+# ========================
+# Python / Backend
+# ========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+*.so
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.pyre_configuration
+pyrightconfig.json
+
+# ========================
+# Node / Frontend
+# ========================
+node_modules/
+dist/
+.cache/
+*.local
+
+# ========================
+# IDE / OS
+# ========================
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+desktop.ini
+
+# ========================
+# Logs
+# ========================
+*.log
+npm-debug.log*
