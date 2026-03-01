@@ -5,7 +5,7 @@ import QueryInput from './components/QueryInput';
 import LoadingState from './components/LoadingState';
 import ResultsPanel from './components/ResultsPanel';
 
-const API_URL = 'http://localhost:8000/api/chat';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/chat';
 
 const stats = [
   { num: '1500+', label: 'Schemes Tracked', icon: '📋' },
