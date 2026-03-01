@@ -1,0 +1,17 @@
+{
+    "pythonVersion": "3.12",
+    "pythonPlatform": "Windows",
+    "venvPath": "c:\\AI\\backend",
+    "venv": ".venv",
+    "include": [
+        "app"
+    ],
+    "exclude": [
+        "**/__pycache__",
+        ".venv"
+    ],
+    "typeCheckingMode": "basic",
+    "useLibraryCodeForTypes": true,
+    "reportMissingModuleSource": "none",
+    "reportMissingImports": "none"
+}

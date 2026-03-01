@@ -1,0 +1,14 @@
+{
+    "site_package_search_strategy": "all",
+    "source_directories": [
+        {
+            "import_root": ".",
+            "source": "app"
+        }
+    ],
+    "python_version": "3.14",
+    "python_path": "c:/AI/backend/.venv/Scripts/python.exe",
+    "search_path": [
+        "c:/AI/backend/.venv/Lib/site-packages"
+    ]
+}

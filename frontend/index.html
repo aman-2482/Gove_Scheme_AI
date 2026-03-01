@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Government Scheme Finder India</title>
+    <meta name="description" content="Find and apply for Indian government schemes and subsidies with the power of AI.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+
+    <!-- Animated background blobs -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
+
+    <div class="page-wrapper">
+
+        <!-- HERO HEADER -->
+        <header class="hero">
+            <div class="badge">🇮🇳 India-Focused AI</div>
+            <h1>Government <span class="gradient-text">Scheme & Subsidy</span> Finder</h1>
+            <p class="hero-sub">Powered by AI — Discover schemes, check eligibility, and get direct apply links in
+                seconds.</p>
+        </header>
+
+        <!-- STATS BAR -->
+        <div class="stats-bar">
+            <div class="stat"><span class="stat-num">1500+</span><span class="stat-label">Schemes Tracked</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat"><span class="stat-num">28</span><span class="stat-label">States Covered</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat"><span class="stat-num">AI</span><span class="stat-label">Powered Analysis</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat"><span class="stat-num">Free</span><span class="stat-label">No Signup Needed</span></div>
+        </div>
+
+        <!-- MAIN CARD -->
+        <main class="main-card">
+            <div class="input-section">
+                <label for="user-prompt" class="input-label">
+                    <span class="label-icon">💬</span> Describe your situation
+                </label>
+                <textarea id="user-prompt" rows="4"
+                    placeholder="E.g., I am a small farmer in Maharashtra with 3 acres of land looking for solar pump subsidies and PM-KUSUM scheme..."></textarea>
+
+                <div class="bottom-controls">
+                    <!-- Model selector commented out — using fastest model by default (DeepSeek Chat)
+                    <div class="model-selector">
+                        <label for="model-select">
+                            <span class="label-icon">🤖</span> AI Model
+                        </label>
+                        <select id="model-select">
+                            <option value="deepseek/deepseek-chat">DeepSeek Chat (Fast & Default)</option>
+                            <option value="mistralai/mistral-large">Mistral Large (Balanced)</option>
+                            <option value="anthropic/claude-3-haiku">Claude 3 Haiku (Premium)</option>
+                        </select>
+                    </div>
+                    -->
+                    <button id="analyze-btn" class="analyze-btn">
+                        <span class="btn-icon">🔍</span>
+                        <span class="btn-text">Analyze Schemes</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- QUICK EXAMPLES -->
+            <div class="examples-section">
+                <p class="examples-label">Try an example:</p>
+                <div class="example-chips">
+                    <button class="chip"
+                        data-prompt="I am a farmer in Punjab with 5 acres of land. Tell me about PM-KUSUM solar pump subsidy.">🌾
+                        PM-KUSUM Solar Pump</button>
+                    <button class="chip"
+                        data-prompt="I am a woman entrepreneur from Rajasthan looking for MUDRA loan scheme for my small business.">👩‍💼
+                        MUDRA Loan Scheme</button>
+                    <button class="chip"
+                        data-prompt="I am a student from a rural area in Bihar looking for post-matric scholarship schemes.">🎓
+                        Student Scholarship</button>
+                    <button class="chip"
+                        data-prompt="I want to know about PM Awas Yojana for affordable housing in Maharashtra.">🏠 PM
+                        Awas Yojana</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- LOADING STATE -->
+        <div id="loading" class="loading-section hidden">
+            <div class="loading-card">
+                <div class="pulse-ring"></div>
+                <div class="loader-icon">🤖</div>
+                <p class="loading-title">Analyzing your query...</p>
+                <p class="loading-sub">AI is searching through government schemes and checking eligibility</p>
+                <div class="loading-steps">
+                    <span class="step active" id="step-1">🔍 Searching schemes</span>
+                    <span class="step" id="step-2">📋 Checking eligibility</span>
+                    <span class="step" id="step-3">🔗 Finding apply links</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <section id="results" class="results-section hidden">
+            <div class="results-header">
+                <h2>✨ Analysis Complete</h2>
+                <div class="result-meta">
+                    <span class="meta-pill model-pill">🤖 <span id="res-model">—</span></span>
+                    <span class="meta-pill token-pill">⚡ <span id="res-tokens">0</span> tokens</span>
+                </div>
+            </div>
+            <div class="cards-grid">
+
+                <!-- Summary -->
+                <div class="result-card card-summary">
+                    <div class="card-header">
+                        <div class="card-icon-wrap icon-blue">📝</div>
+                        <h3>Summary</h3>
+                    </div>
+                    <p id="res-summary"></p>
+                </div>
+
+                <!-- Eligibility -->
+                <div class="result-card card-eligibility">
+                    <div class="card-header">
+                        <div class="card-icon-wrap icon-green">✅</div>
+                        <h3>Eligibility Reasoning</h3>
+                    </div>
+                    <p id="res-eligibility"></p>
+                </div>
+
+                <!-- Actions -->
+                <div class="result-card card-actions">
+                    <div class="card-header">
+                        <div class="card-icon-wrap icon-orange">🚀</div>
+                        <h3>Recommended Actions</h3>
+                    </div>
+                    <ul id="res-actions"></ul>
+                </div>
+
+                <!-- Risks -->
+                <div class="result-card card-risks">
+                    <div class="card-header">
+                        <div class="card-icon-wrap icon-red">⚠️</div>
+                        <h3>Risk Notes & Caveats</h3>
+                    </div>
+                    <ul id="res-risks"></ul>
+                </div>
+
+            </div>
+
+            <!-- Apply Links -->
+            <div id="apply-links-section" class="apply-links-section hidden">
+                <h3 class="apply-links-title">🔗 Official Apply Links</h3>
+                <p class="apply-links-sub">Click below to apply directly on the official government portals</p>
+                <div id="apply-links-container" class="apply-links-container"></div>
+            </div>
+
+            <!-- New Search -->
+            <div class="new-search-wrap">
+                <button id="new-search-btn" class="new-search-btn">🔄 Start New Search</button>
+            </div>
+        </section>
+
+        <!-- ERROR BOX -->
+        <div id="error-container" class="error-section hidden">
+            <div class="error-card">
+                <div class="error-icon">⚠️</div>
+                <h3>Something went wrong</h3>
+                <p id="error-msg"></p>
+                <button onclick="document.getElementById('error-container').classList.add('hidden')"
+                    class="dismiss-btn">Dismiss</button>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>🇮🇳 AI Government Scheme Finder &nbsp;|&nbsp; Powered by <strong>OpenRouter + DeepSeek</strong>
+                &nbsp;|&nbsp; For informational purposes only</p>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>
