@@ -1,0 +1,28 @@
+name: Keep Render Backend Awake
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping-health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend health endpoint
+        env:
+          HEALTH_URL: ${{ secrets.RENDER_HEALTH_URL }}
+        run: |
+          if [ -z "$HEALTH_URL" ]; then
+            echo "RENDER_HEALTH_URL secret is not set"
+            exit 1
+          fi
+
+          echo "Pinging $HEALTH_URL"
+          status_code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 30 "$HEALTH_URL")
+          echo "HTTP $status_code"
+
+          if [ "$status_code" -lt 200 ] || [ "$status_code" -ge 400 ]; then
+            echo "Health check failed"
+            exit 1
+          fi

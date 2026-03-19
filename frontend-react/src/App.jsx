@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AuroraBackground from './components/AuroraBackground';
 import QueryInput from './components/QueryInput';
@@ -15,6 +15,24 @@ function getHealthUrl(apiUrl) {
   } catch {
     return '/health';
   }
+}
+
+async function warmUpBackend(apiUrl, { maxWaitMs = 45000, pollIntervalMs = 2500 } = {}) {
+  const healthUrl = getHealthUrl(apiUrl);
+  const start = Date.now();
+
+  while (Date.now() - start < maxWaitMs) {
+    try {
+      const res = await fetch(healthUrl, { method: 'GET', cache: 'no-store' });
+      if (res.ok) return true;
+    } catch {
+      // Ignore transient errors while waiting for cold start.
+    }
+
+    await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
+  }
+
+  return false;
 }
 
 const stats = [
@@ -51,17 +69,17 @@ export default function App() {
   const [activeStep, setActiveStep] = useState(0);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const warmupPromiseRef = useRef(null);
 
   useEffect(() => {
-    const healthUrl = getHealthUrl(API_URL);
-
-    const pingBackend = () => {
+    const pingBackend = async () => {
       // Keep the Render instance warm with a tiny health request.
-      fetch(healthUrl, { method: 'GET', cache: 'no-store' }).catch(() => {
+      fetch(getHealthUrl(API_URL), { method: 'GET', cache: 'no-store' }).catch(() => {
         // Ignore keep-alive failures; normal chat requests handle user-facing errors.
       });
     };
 
+    warmupPromiseRef.current = warmUpBackend(API_URL);
     pingBackend();
     const timer = setInterval(pingBackend, KEEP_ALIVE_INTERVAL_MS);
     return () => clearInterval(timer);
@@ -81,6 +99,12 @@ export default function App() {
     }, 3000);
 
     try {
+      if (!warmupPromiseRef.current) {
+        warmupPromiseRef.current = warmUpBackend(API_URL);
+      }
+
+      await warmupPromiseRef.current;
+
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

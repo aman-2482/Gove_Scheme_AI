@@ -214,6 +214,31 @@ Analyze a user's situation and return matched government schemes.
 
 ---
 
+## ⏰ Keep Render Awake (24/7)
+
+This repository includes a GitHub Actions workflow that pings your backend every 10 minutes to reduce cold starts.
+
+- Workflow file: `.github/workflows/keep-render-awake.yml`
+- Ping target: your deployed `/health` endpoint
+- Schedule: every 10 minutes + manual trigger
+
+### Setup (one time)
+
+1. Go to GitHub repository **Settings → Secrets and variables → Actions**.
+2. Add a new repository secret named `RENDER_HEALTH_URL`.
+3. Set its value to your Render health URL, for example:
+
+```text
+https://your-render-service.onrender.com/health
+```
+
+4. Push this code to GitHub.
+5. In **Actions**, run **Keep Render Backend Awake** once using **Run workflow**.
+
+If the secret is missing or the endpoint returns non-2xx/3xx, the workflow fails so you can catch issues quickly.
+
+---
+
 ## 💡 Example Queries
 
 Try these in the app:
