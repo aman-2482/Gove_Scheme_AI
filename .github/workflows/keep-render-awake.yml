@@ -40,7 +40,14 @@ jobs:
             seen[$url]=1
 
             echo "Pinging $url"
-            status_code=$(curl -sS -L -o /dev/null -w "%{http_code}" --max-time 30 "$url")
+            status_code="$(curl -sS -L -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 "$url" 2>/dev/null || true)"
+
+            # When curl cannot connect (timeout/DNS/TLS), continue trying variants.
+            if [ -z "$status_code" ] || [ "$status_code" = "000" ]; then
+              echo "Request failed for $url"
+              continue
+            fi
+
             echo "HTTP $status_code"
 
             if [ "$status_code" -ge 200 ] && [ "$status_code" -lt 400 ]; then
