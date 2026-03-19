@@ -19,20 +19,26 @@ jobs:
             exit 1
           fi
 
-          base_url="${HEALTH_URL%/}"
-          urls_to_try=()
+          provided_url="${HEALTH_URL%/}"
+          base_url="$provided_url"
+          base_url="${base_url%/health}"
+          base_url="${base_url%/api/health}"
 
-          case "$base_url" in
-            */health|*/api/health)
-              urls_to_try+=("$base_url")
-              ;;
-            *)
-              urls_to_try+=("$base_url/health" "$base_url/api/health" "$base_url")
-              ;;
-          esac
+          urls_to_try=(
+            "$provided_url"
+            "$base_url/health"
+            "$base_url/api/health"
+            "$base_url"
+          )
 
           success=0
+          declare -A seen
           for url in "${urls_to_try[@]}"; do
+            if [ -n "${seen[$url]}" ]; then
+              continue
+            fi
+            seen[$url]=1
+
             echo "Pinging $url"
             status_code=$(curl -sS -L -o /dev/null -w "%{http_code}" --max-time 30 "$url")
             echo "HTTP $status_code"
