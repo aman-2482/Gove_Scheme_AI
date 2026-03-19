@@ -19,11 +19,31 @@ jobs:
             exit 1
           fi
 
-          echo "Pinging $HEALTH_URL"
-          status_code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 30 "$HEALTH_URL")
-          echo "HTTP $status_code"
+          base_url="${HEALTH_URL%/}"
+          urls_to_try=()
 
-          if [ "$status_code" -lt 200 ] || [ "$status_code" -ge 400 ]; then
-            echo "Health check failed"
+          case "$base_url" in
+            */health|*/api/health)
+              urls_to_try+=("$base_url")
+              ;;
+            *)
+              urls_to_try+=("$base_url/health" "$base_url/api/health" "$base_url")
+              ;;
+          esac
+
+          success=0
+          for url in "${urls_to_try[@]}"; do
+            echo "Pinging $url"
+            status_code=$(curl -sS -L -o /dev/null -w "%{http_code}" --max-time 30 "$url")
+            echo "HTTP $status_code"
+
+            if [ "$status_code" -ge 200 ] && [ "$status_code" -lt 400 ]; then
+              success=1
+              break
+            fi
+          done
+
+          if [ "$success" -ne 1 ]; then
+            echo "Health check failed for all URL variants"
             exit 1
           fi
