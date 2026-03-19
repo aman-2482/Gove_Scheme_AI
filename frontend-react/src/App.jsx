@@ -6,6 +6,16 @@ import LoadingState from './components/LoadingState';
 import ResultsPanel from './components/ResultsPanel';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/chat';
+const KEEP_ALIVE_INTERVAL_MS = Number(import.meta.env.VITE_KEEP_ALIVE_INTERVAL_MS || 8 * 60 * 1000);
+
+function getHealthUrl(apiUrl) {
+  try {
+    const parsed = new URL(apiUrl, window.location.origin);
+    return `${parsed.origin}/health`;
+  } catch {
+    return '/health';
+  }
+}
 
 const stats = [
   { num: '1500+', label: 'Schemes Tracked', icon: '📋' },
@@ -41,6 +51,21 @@ export default function App() {
   const [activeStep, setActiveStep] = useState(0);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const healthUrl = getHealthUrl(API_URL);
+
+    const pingBackend = () => {
+      // Keep the Render instance warm with a tiny health request.
+      fetch(healthUrl, { method: 'GET', cache: 'no-store' }).catch(() => {
+        // Ignore keep-alive failures; normal chat requests handle user-facing errors.
+      });
+    };
+
+    pingBackend();
+    const timer = setInterval(pingBackend, KEEP_ALIVE_INTERVAL_MS);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleAnalyze = async () => {
     if (!prompt.trim()) return;

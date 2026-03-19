@@ -1,5 +1,12 @@
 # React + Vite
 
+## Environment
+
+Create a `.env` file from `.env.example` and set:
+
+- `VITE_API_URL` (your backend chat endpoint)
+- `VITE_KEEP_ALIVE_INTERVAL_MS` (keep-alive ping interval for `/health`)
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
