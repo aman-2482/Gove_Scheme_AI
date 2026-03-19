@@ -8,6 +8,7 @@ on:
 jobs:
   ping-health:
     runs-on: ubuntu-latest
+    environment: RENDER_HEALTH_URL
     steps:
       - name: Ping backend health endpoint
         env:
